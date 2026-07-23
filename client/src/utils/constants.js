@@ -50,19 +50,19 @@ export const ROUTES = {
   UNAUTHORIZED: '/unauthorized',
 };
 
-// ─── Status Badge Colors (Tailwind classes) ───────────────────────────────────
+// ─── Status Badge Colors (Tailwind classes for Dark Mode) ────────────────────
 export const STATUS_COLORS = {
   // Policy
-  active: 'bg-green-100 text-green-800',
-  expired: 'bg-gray-100 text-gray-600',
-  cancelled: 'bg-red-100 text-red-700',
+  active: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm shadow-emerald-500/10',
+  expired: 'bg-slate-500/15 text-slate-400 border border-slate-500/30',
+  cancelled: 'bg-rose-500/15 text-rose-400 border border-rose-500/30',
   // Claims
-  pending: 'bg-yellow-100 text-yellow-800',
-  approved: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-700',
+  pending: 'bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-sm shadow-amber-500/10',
+  approved: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm shadow-emerald-500/10',
+  rejected: 'bg-rose-500/15 text-rose-400 border border-rose-500/30',
   // Payments
-  paid: 'bg-blue-100 text-blue-800',
-  overdue: 'bg-orange-100 text-orange-800',
+  paid: 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-sm shadow-indigo-500/10',
+  overdue: 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm shadow-rose-500/20 animate-pulse',
 };
 
 // ─── Pagination ───────────────────────────────────────────────────────────────
