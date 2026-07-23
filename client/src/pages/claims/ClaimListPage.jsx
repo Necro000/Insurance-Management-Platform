@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getClaimsApi } from '../../api/claimApi';
 import StatusBadge from '../../components/common/StatusBadge';
+import SearchBar from '../../components/common/SearchBar';
+import Pagination from '../../components/common/Pagination';
 import { formatDate, formatCurrency } from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
 
@@ -38,20 +40,11 @@ const ClaimListPage = () => {
 
   useEffect(() => {
     fetchClaims(statusFilter, search, page);
-  }, [page]);
+  }, [statusFilter, search, page]);
 
-  const handleStatusChange = (e) => {
-    const val = e.target.value;
-    setStatusFilter(val);
+  const handleSearch = (query) => {
+    setSearch(query);
     setPage(1);
-    fetchClaims(val, search, 1);
-  };
-
-  const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearch(val);
-    setPage(1);
-    fetchClaims(statusFilter, val, 1);
   };
 
   return (
@@ -73,11 +66,14 @@ const ClaimListPage = () => {
       </div>
 
       {/* Toolbar */}
-      <div className="card p-4 flex flex-col sm:flex-row items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="w-full sm:w-48">
           <select
             value={statusFilter}
-            onChange={handleStatusChange}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
             className="input-field cursor-pointer text-xs"
           >
             <option value="" className="bg-[var(--color-surface)]">All Statuses</option>
@@ -87,14 +83,11 @@ const ClaimListPage = () => {
           </select>
         </div>
 
-        <div className="flex-1 w-full flex items-center gap-2">
-          <span className="text-lg">🔍</span>
-          <input
-            type="text"
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Search by claim reason, policy number, or customer name..."
-            className="input-field border-none bg-transparent focus:bg-transparent focus:outline-none"
+        <div className="flex-1 w-full">
+          <SearchBar
+            placeholder="Search claims by reason, policy number, or customer name..."
+            onSearch={handleSearch}
+            initialValue={search}
           />
         </div>
       </div>
@@ -169,31 +162,12 @@ const ClaimListPage = () => {
           </table>
         </div>
 
-        {/* Pagination Footer */}
-        {meta.totalPages > 1 && (
-          <div className="p-4 border-t border-[var(--color-border)] flex items-center justify-between text-xs text-[var(--color-muted)]">
-            <div>
-              Showing page <span className="font-semibold text-white">{meta.page}</span> of{' '}
-              <span className="font-semibold text-white">{meta.totalPages}</span> ({meta.total} total)
-            </div>
-            <div className="flex gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                disabled={page >= meta.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
+        <Pagination
+          page={meta.page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
     </div>
   );

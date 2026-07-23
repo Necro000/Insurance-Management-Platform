@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getPaymentsApi } from '../../api/paymentApi';
 import StatusBadge from '../../components/common/StatusBadge';
+import Pagination from '../../components/common/Pagination';
 import { formatDate, formatCurrency } from '../../utils/formatDate';
 
 const PaymentListPage = () => {
@@ -32,13 +33,12 @@ const PaymentListPage = () => {
 
   useEffect(() => {
     fetchPayments(statusFilter, page);
-  }, [page]);
+  }, [statusFilter, page]);
 
   const handleStatusChange = (e) => {
     const val = e.target.value;
     setStatusFilter(val);
     setPage(1);
-    fetchPayments(val, 1);
   };
 
   return (
@@ -144,31 +144,12 @@ const PaymentListPage = () => {
           </table>
         </div>
 
-        {/* Pagination Footer */}
-        {meta.totalPages > 1 && (
-          <div className="p-4 border-t border-[var(--color-border)] flex items-center justify-between text-xs text-[var(--color-muted)]">
-            <div>
-              Showing page <span className="font-semibold text-white">{meta.page}</span> of{' '}
-              <span className="font-semibold text-white">{meta.totalPages}</span> ({meta.total} total)
-            </div>
-            <div className="flex gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                disabled={page >= meta.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
+        <Pagination
+          page={meta.page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
     </div>
   );

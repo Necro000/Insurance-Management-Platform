@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getCustomersApi } from '../../api/customerApi';
+import SearchBar from '../../components/common/SearchBar';
+import Pagination from '../../components/common/Pagination';
 import { formatDate } from '../../utils/formatDate';
 
 const CustomerListPage = () => {
@@ -10,7 +12,7 @@ const CustomerListPage = () => {
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState({ total: 0, totalPages: 1, page: 1 });
 
-  const fetchCustomers = async (searchQuery = '', pageNum = 1) => {
+  const fetchCustomers = async (searchQuery = search, pageNum = page) => {
     setLoading(true);
     try {
       const res = await getCustomersApi({
@@ -31,13 +33,11 @@ const CustomerListPage = () => {
 
   useEffect(() => {
     fetchCustomers(search, page);
-  }, [page]);
+  }, [search, page]);
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearch(value);
+  const handleSearch = (query) => {
+    setSearch(query);
     setPage(1);
-    fetchCustomers(value, 1);
   };
 
   return (
@@ -54,16 +54,11 @@ const CustomerListPage = () => {
         </Link>
       </div>
 
-      <div className="card p-4 flex items-center gap-2">
-        <span className="text-lg">🔍</span>
-        <input
-          type="text"
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="Search by name, email, or phone..."
-          className="input-field border-none bg-transparent focus:bg-transparent focus:outline-none"
-        />
-      </div>
+      <SearchBar
+        placeholder="Search customers by name, email, or phone number..."
+        onSearch={handleSearch}
+        initialValue={search}
+      />
 
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
@@ -114,7 +109,7 @@ const CustomerListPage = () => {
                     <td className="px-6 py-4 text-right space-x-2">
                       <Link
                         to={`/customers/${c.id}`}
-                        className="text-xs text-indigo-400 hover:underline"
+                        className="text-xs text-indigo-400 hover:underline font-semibold"
                       >
                         View
                       </Link>
@@ -132,31 +127,12 @@ const CustomerListPage = () => {
           </table>
         </div>
 
-        {/* Pagination Footer */}
-        {meta.totalPages > 1 && (
-          <div className="p-4 border-t border-[var(--color-border)] flex items-center justify-between text-xs text-[var(--color-muted)]">
-            <div>
-              Showing page <span className="font-semibold text-white">{meta.page}</span> of{' '}
-              <span className="font-semibold text-white">{meta.totalPages}</span> ({meta.total} total)
-            </div>
-            <div className="flex gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                disabled={page >= meta.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
+        <Pagination
+          page={meta.page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
     </div>
   );
