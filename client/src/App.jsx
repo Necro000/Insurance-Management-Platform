@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
+import DashboardPage from './pages/dashboard/DashboardPage';
 import CustomerListPage from './pages/customers/CustomerListPage';
 import CustomerDetailPage from './pages/customers/CustomerDetailPage';
 import CustomerFormPage from './pages/customers/CustomerFormPage';
@@ -16,6 +17,7 @@ import ClaimListPage from './pages/claims/ClaimListPage';
 import ClaimDetailPage from './pages/claims/ClaimDetailPage';
 import ClaimFormPage from './pages/claims/ClaimFormPage';
 import DocumentsPage from './pages/documents/DocumentsPage';
+import ReportsPage from './pages/reports/ReportsPage';
 import useAuth from './hooks/useAuth';
 import './index.css';
 
@@ -31,6 +33,7 @@ const AppLayout = ({ children }) => {
     { name: 'Claims', path: '/claims', roles: ['admin', 'agent', 'customer'] },
     { name: 'Payments', path: '/payments', roles: ['admin', 'agent', 'customer'] },
     { name: 'Documents', path: '/documents', roles: ['admin', 'agent', 'customer'] },
+    { name: 'Reports', path: '/reports', roles: ['admin'] },
   ];
 
   const allowedLinks = navLinks.filter((link) => link.roles.includes(user?.role));
@@ -86,47 +89,6 @@ const AppLayout = ({ children }) => {
   );
 };
 
-// Placeholder Dashboard Page
-const DashboardPlaceholder = () => {
-  const { user } = useAuth();
-  return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold text-gradient">Dashboard</h1>
-        <p className="text-sm text-[var(--color-muted)]">
-          Welcome back, <span className="text-white font-semibold">{user?.name}</span>!
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="card p-6 space-y-2">
-          <div className="text-xs font-semibold text-[var(--color-muted)] uppercase">User Profile</div>
-          <div className="text-base font-bold text-white">{user?.name}</div>
-          <div className="text-xs text-[var(--color-muted)]">{user?.email}</div>
-        </div>
-
-        <Link to="/policies" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
-          <div className="text-xs font-semibold text-indigo-400 uppercase">Policies →</div>
-          <div className="text-base font-bold text-white">Manage Policies</div>
-          <div className="text-xs text-[var(--color-muted)]">Browse active & expired policies</div>
-        </Link>
-
-        <Link to="/claims" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
-          <div className="text-xs font-semibold text-indigo-400 uppercase">Claims →</div>
-          <div className="text-base font-bold text-white">Insurance Claims</div>
-          <div className="text-xs text-[var(--color-muted)]">Submit claims & track verification</div>
-        </Link>
-
-        <Link to="/documents" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
-          <div className="text-xs font-semibold text-indigo-400 uppercase">Documents →</div>
-          <div className="text-base font-bold text-white">Files & Proofs</div>
-          <div className="text-xs text-[var(--color-muted)]">Upload & download identity files</div>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
 // Unauthorized Page
 const UnauthorizedPage = () => (
   <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--color-bg)]">
@@ -158,7 +120,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <AppLayout>
-                  <DashboardPlaceholder />
+                  <DashboardPage />
                 </AppLayout>
               </ProtectedRoute>
             }
@@ -309,6 +271,18 @@ function App() {
               <ProtectedRoute roles={['admin', 'agent', 'customer']}>
                 <AppLayout>
                   <DocumentsPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Report Routes */}
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute roles={['admin']}>
+                <AppLayout>
+                  <ReportsPage />
                 </AppLayout>
               </ProtectedRoute>
             }
