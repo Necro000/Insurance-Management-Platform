@@ -6,11 +6,13 @@ import {
   getCustomerByIdApi,
   updateCustomerApi,
 } from '../../api/customerApi';
+import { useToast } from '../../context/ToastContext';
 
 const CustomerFormPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEdit = Boolean(id);
+  const { addToast } = useToast();
 
   const [initialValues, setInitialValues] = useState(null);
   const [loading, setLoading] = useState(isEdit);
@@ -43,22 +45,26 @@ const CustomerFormPage = () => {
       if (isEdit) {
         const res = await updateCustomerApi(id, formData);
         if (res.success) {
+          addToast('Customer updated successfully!', 'success');
           navigate(`/customers/${id}`);
         } else {
           setServerError(res.message || 'Failed to update customer');
+          addToast(res.message || 'Failed to update customer', 'error');
         }
       } else {
         const res = await createCustomerApi(formData);
         if (res.success && res.data) {
+          addToast('Customer created successfully!', 'success');
           navigate(`/customers/${res.data.id}`);
         } else {
           setServerError(res.message || 'Failed to create customer');
+          addToast(res.message || 'Failed to create customer', 'error');
         }
       }
     } catch (err) {
-      setServerError(
-        err.response?.data?.message || 'An error occurred while saving customer data'
-      );
+      const errMsg = err.response?.data?.message || 'An error occurred while saving customer data';
+      setServerError(errMsg);
+      addToast(errMsg, 'error');
     } finally {
       setSubmitting(false);
     }
