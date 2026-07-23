@@ -10,6 +10,8 @@ import CustomerFormPage from './pages/customers/CustomerFormPage';
 import PolicyListPage from './pages/policies/PolicyListPage';
 import PolicyDetailPage from './pages/policies/PolicyDetailPage';
 import PolicyFormPage from './pages/policies/PolicyFormPage';
+import PaymentListPage from './pages/payments/PaymentListPage';
+import PaymentFormPage from './pages/payments/PaymentFormPage';
 import useAuth from './hooks/useAuth';
 import './index.css';
 
@@ -22,6 +24,7 @@ const AppLayout = ({ children }) => {
     { name: 'Dashboard', path: '/dashboard', roles: ['admin', 'agent', 'customer'] },
     { name: 'Customers', path: '/customers', roles: ['admin', 'agent'] },
     { name: 'Policies', path: '/policies', roles: ['admin', 'agent', 'customer'] },
+    { name: 'Payments', path: '/payments', roles: ['admin', 'agent', 'customer'] },
   ];
 
   const allowedLinks = navLinks.filter((link) => link.roles.includes(user?.role));
@@ -96,15 +99,16 @@ const DashboardPlaceholder = () => {
           <div className="text-xs text-[var(--color-muted)]">{user?.email}</div>
         </div>
 
-        <div className="card p-6 space-y-2">
-          <div className="text-xs font-semibold text-[var(--color-muted)] uppercase">Role</div>
-          <div className="text-base font-bold uppercase text-indigo-400">{user?.role}</div>
-        </div>
-
         <Link to="/policies" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
-          <div className="text-xs font-semibold text-indigo-400 uppercase">Quick Access →</div>
-          <div className="text-base font-bold text-white">View Policies</div>
+          <div className="text-xs font-semibold text-indigo-400 uppercase">Policies →</div>
+          <div className="text-base font-bold text-white">Manage Policies</div>
           <div className="text-xs text-[var(--color-muted)]">Browse active and expired policies</div>
+        </Link>
+
+        <Link to="/payments" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
+          <div className="text-xs font-semibold text-indigo-400 uppercase">Payments →</div>
+          <div className="text-base font-bold text-white">Premium Payments</div>
+          <div className="text-xs text-[var(--color-muted)]">View payment history and overdue alerts</div>
         </Link>
       </div>
     </div>
@@ -227,6 +231,28 @@ function App() {
               <ProtectedRoute roles={['admin', 'agent']}>
                 <AppLayout>
                   <PolicyFormPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Payment Routes */}
+          <Route
+            path="/payments"
+            element={
+              <ProtectedRoute roles={['admin', 'agent', 'customer']}>
+                <AppLayout>
+                  <PaymentListPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments/new"
+            element={
+              <ProtectedRoute roles={['admin', 'agent', 'customer']}>
+                <AppLayout>
+                  <PaymentFormPage />
                 </AppLayout>
               </ProtectedRoute>
             }
