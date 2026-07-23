@@ -7,6 +7,9 @@ import RegisterPage from './pages/auth/RegisterPage';
 import CustomerListPage from './pages/customers/CustomerListPage';
 import CustomerDetailPage from './pages/customers/CustomerDetailPage';
 import CustomerFormPage from './pages/customers/CustomerFormPage';
+import PolicyListPage from './pages/policies/PolicyListPage';
+import PolicyDetailPage from './pages/policies/PolicyDetailPage';
+import PolicyFormPage from './pages/policies/PolicyFormPage';
 import useAuth from './hooks/useAuth';
 import './index.css';
 
@@ -18,6 +21,7 @@ const AppLayout = ({ children }) => {
   const navLinks = [
     { name: 'Dashboard', path: '/dashboard', roles: ['admin', 'agent', 'customer'] },
     { name: 'Customers', path: '/customers', roles: ['admin', 'agent'] },
+    { name: 'Policies', path: '/policies', roles: ['admin', 'agent', 'customer'] },
   ];
 
   const allowedLinks = navLinks.filter((link) => link.roles.includes(user?.role));
@@ -97,13 +101,11 @@ const DashboardPlaceholder = () => {
           <div className="text-base font-bold uppercase text-indigo-400">{user?.role}</div>
         </div>
 
-        {['admin', 'agent'].includes(user?.role) && (
-          <Link to="/customers" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
-            <div className="text-xs font-semibold text-indigo-400 uppercase">Quick Access →</div>
-            <div className="text-base font-bold text-white">Manage Customers</div>
-            <div className="text-xs text-[var(--color-muted)]">View records, policy histories & add clients</div>
-          </Link>
-        )}
+        <Link to="/policies" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
+          <div className="text-xs font-semibold text-indigo-400 uppercase">Quick Access →</div>
+          <div className="text-base font-bold text-white">View Policies</div>
+          <div className="text-xs text-[var(--color-muted)]">Browse active and expired policies</div>
+        </Link>
       </div>
     </div>
   );
@@ -134,7 +136,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-          {/* Protected Routes inside AppLayout */}
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -145,6 +147,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Customer Routes */}
           <Route
             path="/customers"
             element={
@@ -181,6 +185,48 @@ function App() {
               <ProtectedRoute roles={['admin', 'agent']}>
                 <AppLayout>
                   <CustomerFormPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Policy Routes */}
+          <Route
+            path="/policies"
+            element={
+              <ProtectedRoute roles={['admin', 'agent', 'customer']}>
+                <AppLayout>
+                  <PolicyListPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/policies/new"
+            element={
+              <ProtectedRoute roles={['admin', 'agent']}>
+                <AppLayout>
+                  <PolicyFormPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/policies/:id"
+            element={
+              <ProtectedRoute roles={['admin', 'agent', 'customer']}>
+                <AppLayout>
+                  <PolicyDetailPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/policies/:id/edit"
+            element={
+              <ProtectedRoute roles={['admin', 'agent']}>
+                <AppLayout>
+                  <PolicyFormPage />
                 </AppLayout>
               </ProtectedRoute>
             }
