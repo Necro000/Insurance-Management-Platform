@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const authController = require('../controllers/authController');
+const { validateRegister, validateLogin } = require('../validators/authValidator');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Controllers will be added in Phase 2
-// POST /api/auth/register
-router.post('/register', (req, res) => res.status(501).json({ success: false, message: 'Not implemented yet' }));
+// POST /api/auth/register - Public
+router.post('/register', validateRegister, authController.register);
 
-// POST /api/auth/login
-router.post('/login', (req, res) => res.status(501).json({ success: false, message: 'Not implemented yet' }));
+// POST /api/auth/login - Public
+router.post('/login', validateLogin, authController.login);
 
-// GET /api/auth/me
-router.get('/me', (req, res) => res.status(501).json({ success: false, message: 'Not implemented yet' }));
+// GET /api/auth/me - Authenticated
+router.get('/me', authMiddleware, authController.getMe);
 
 module.exports = router;
