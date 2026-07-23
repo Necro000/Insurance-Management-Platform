@@ -18,12 +18,16 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
       try {
         const res = await getPoliciesApi({ status: 'active', limit: 100 });
         if (res.success) {
-          setPolicies(res.data || []);
-          if (!formData.policyId && res.data && res.data.length > 0) {
+          const list = res.data || [];
+          setPolicies(list);
+
+          if (list.length > 0) {
+            const targetId = defaultPolicyId ? Number(defaultPolicyId) : list[0].id;
+            const targetPolicy = list.find((p) => p.id === targetId) || list[0];
             setFormData((prev) => ({
               ...prev,
-              policyId: res.data[0].id,
-              amount: res.data[0].premiumAmount || '',
+              policyId: targetPolicy.id,
+              amount: prev.amount || targetPolicy.premiumAmount || '',
             }));
           }
         }
@@ -34,7 +38,7 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
       }
     };
     fetchPolicies();
-  }, []);
+  }, [defaultPolicyId]);
 
   const handlePolicyChange = (e) => {
     const selectedId = Number(e.target.value);
@@ -84,13 +88,13 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {serverError && (
-        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold">
           {serverError}
         </div>
       )}
 
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider mb-1 text-[var(--color-muted)]">
+        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5 text-[var(--color-muted)]">
           Select Policy *
         </label>
         {loadingPolicies ? (
@@ -101,7 +105,7 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
             value={formData.policyId}
             onChange={handlePolicyChange}
             disabled={Boolean(defaultPolicyId)}
-            className={`input-field cursor-pointer ${errors.policyId ? 'border-red-500' : ''}`}
+            className={`input-field cursor-pointer ${errors.policyId ? 'border-rose-500' : ''}`}
           >
             {policies.length === 0 ? (
               <option value="">No active policies found</option>
@@ -114,12 +118,12 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
             )}
           </select>
         )}
-        {errors.policyId && <p className="text-xs text-red-400 mt-1">{errors.policyId}</p>}
+        {errors.policyId && <p className="text-xs text-rose-400 mt-1">{errors.policyId}</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider mb-1 text-[var(--color-muted)]">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5 text-[var(--color-muted)]">
             Payment Amount (₹) *
           </label>
           <input
@@ -129,13 +133,13 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
             value={formData.amount}
             onChange={handleChange}
             placeholder="12000"
-            className={`input-field ${errors.amount ? 'border-red-500' : ''}`}
+            className={`input-field ${errors.amount ? 'border-rose-500' : ''}`}
           />
-          {errors.amount && <p className="text-xs text-red-400 mt-1">{errors.amount}</p>}
+          {errors.amount && <p className="text-xs text-rose-400 mt-1">{errors.amount}</p>}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider mb-1 text-[var(--color-muted)]">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5 text-[var(--color-muted)]">
             Payment Date *
           </label>
           <input
@@ -143,13 +147,13 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
             name="paymentDate"
             value={formData.paymentDate}
             onChange={handleChange}
-            className={`input-field ${errors.paymentDate ? 'border-red-500' : ''}`}
+            className={`input-field ${errors.paymentDate ? 'border-rose-500' : ''}`}
           />
-          {errors.paymentDate && <p className="text-xs text-red-400 mt-1">{errors.paymentDate}</p>}
+          {errors.paymentDate && <p className="text-xs text-rose-400 mt-1">{errors.paymentDate}</p>}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider mb-1 text-[var(--color-muted)]">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5 text-[var(--color-muted)]">
             Payment Status
           </label>
           <select
@@ -168,7 +172,7 @@ const PaymentForm = ({ defaultPolicyId, onSubmit, submitting, error: serverError
         <button
           type="submit"
           disabled={submitting}
-          className="btn-primary w-full md:w-auto px-6 py-2.5 flex items-center justify-center gap-2"
+          className="btn-primary w-full md:w-auto px-6 py-2.5 flex items-center justify-center gap-2 text-xs"
         >
           {submitting ? (
             <>
