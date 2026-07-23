@@ -15,6 +15,7 @@ import PaymentFormPage from './pages/payments/PaymentFormPage';
 import ClaimListPage from './pages/claims/ClaimListPage';
 import ClaimDetailPage from './pages/claims/ClaimDetailPage';
 import ClaimFormPage from './pages/claims/ClaimFormPage';
+import DocumentsPage from './pages/documents/DocumentsPage';
 import useAuth from './hooks/useAuth';
 import './index.css';
 
@@ -29,6 +30,7 @@ const AppLayout = ({ children }) => {
     { name: 'Policies', path: '/policies', roles: ['admin', 'agent', 'customer'] },
     { name: 'Claims', path: '/claims', roles: ['admin', 'agent', 'customer'] },
     { name: 'Payments', path: '/payments', roles: ['admin', 'agent', 'customer'] },
+    { name: 'Documents', path: '/documents', roles: ['admin', 'agent', 'customer'] },
   ];
 
   const allowedLinks = navLinks.filter((link) => link.roles.includes(user?.role));
@@ -96,23 +98,29 @@ const DashboardPlaceholder = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="card p-6 space-y-2">
           <div className="text-xs font-semibold text-[var(--color-muted)] uppercase">User Profile</div>
           <div className="text-base font-bold text-white">{user?.name}</div>
           <div className="text-xs text-[var(--color-muted)]">{user?.email}</div>
         </div>
 
-        <Link to="/claims" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
-          <div className="text-xs font-semibold text-indigo-400 uppercase">Claims →</div>
-          <div className="text-base font-bold text-white">Insurance Claims</div>
-          <div className="text-xs text-[var(--color-muted)]">Submit claims and track verification status</div>
-        </Link>
-
         <Link to="/policies" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
           <div className="text-xs font-semibold text-indigo-400 uppercase">Policies →</div>
           <div className="text-base font-bold text-white">Manage Policies</div>
-          <div className="text-xs text-[var(--color-muted)]">Browse active and expired policies</div>
+          <div className="text-xs text-[var(--color-muted)]">Browse active & expired policies</div>
+        </Link>
+
+        <Link to="/claims" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
+          <div className="text-xs font-semibold text-indigo-400 uppercase">Claims →</div>
+          <div className="text-base font-bold text-white">Insurance Claims</div>
+          <div className="text-xs text-[var(--color-muted)]">Submit claims & track verification</div>
+        </Link>
+
+        <Link to="/documents" className="card p-6 space-y-2 hover:border-indigo-500/50 transition-colors block">
+          <div className="text-xs font-semibold text-indigo-400 uppercase">Documents →</div>
+          <div className="text-base font-bold text-white">Files & Proofs</div>
+          <div className="text-xs text-[var(--color-muted)]">Upload & download identity files</div>
         </Link>
       </div>
     </div>
@@ -289,6 +297,18 @@ function App() {
               <ProtectedRoute roles={['admin', 'agent', 'customer']}>
                 <AppLayout>
                   <ClaimDetailPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Document Routes */}
+          <Route
+            path="/documents"
+            element={
+              <ProtectedRoute roles={['admin', 'agent', 'customer']}>
+                <AppLayout>
+                  <DocumentsPage />
                 </AppLayout>
               </ProtectedRoute>
             }
