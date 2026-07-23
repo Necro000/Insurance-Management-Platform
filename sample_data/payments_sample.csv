@@ -1,0 +1,5 @@
+policyNumber,amount,paymentDate,paymentStatus
+POL-2026-1001,18500,2026-01-02,paid
+POL-2026-1002,12000,2026-02-16,paid
+POL-2026-1004,22000,2026-03-02,paid
+POL-2026-1003,35000,2025-06-02,paid

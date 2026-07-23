@@ -1,0 +1,6 @@
+policyNumber,policyType,customerEmail,premiumAmount,startDate,endDate,status
+POL-2026-1001,Health Comprehensive,rohan.sharma@example.com,18500,2026-01-01,2027-01-01,active
+POL-2026-1002,Motor Insurance,ananya.verma@example.com,12000,2026-02-15,2027-02-15,active
+POL-2026-1003,Life Cover Premium,vikram.m@example.com,35000,2025-06-01,2026-06-01,expired
+POL-2026-1004,Property & Fire,priya.nair@example.com,22000,2026-03-01,2027-03-01,active
+POL-2026-1005,Travel Insurance,siddharth.rao@example.com,5500,2026-01-10,2026-07-10,cancelled

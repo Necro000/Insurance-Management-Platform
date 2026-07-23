@@ -1,0 +1,4 @@
+policyNumber,claimAmount,reason,submissionDate,status
+POL-2026-1001,45000,"Emergency hospitalization and surgical procedures at Apollo Hospital",2026-05-10,approved
+POL-2026-1002,15000,"Bumper repair and denting due to parking collision",2026-06-01,pending
+POL-2026-1004,85000,"Kitchen electrical fire damage repair and restoration",2026-06-15,pending
