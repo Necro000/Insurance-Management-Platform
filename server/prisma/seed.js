@@ -133,54 +133,56 @@ async function main() {
   console.log('✅ Created 3 Policies');
 
   // 5. Create Sample Premium Payments
-  await prisma.premiumPayment.createMany({
-    data: [
-      {
-        policyId: policy1.id,
-        amount: 18500,
-        paymentDate: new Date('2026-01-02'),
-        paymentStatus: 'paid',
-      },
-      {
-        policyId: policy2.id,
-        amount: 12000,
-        paymentDate: new Date('2026-02-16'),
-        paymentStatus: 'paid',
-      },
-      {
-        policyId: policy3.id,
-        amount: 35000,
-        paymentDate: new Date('2025-06-02'),
-        paymentStatus: 'paid',
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  console.log('✅ Created Premium Payments');
+  const existingPayments = await prisma.premiumPayment.count();
+  if (existingPayments === 0) {
+    await prisma.premiumPayment.createMany({
+      data: [
+        {
+          policyId: policy1.id,
+          amount: 18500,
+          paymentDate: new Date('2026-01-02'),
+          paymentStatus: 'paid',
+        },
+        {
+          policyId: policy2.id,
+          amount: 12000,
+          paymentDate: new Date('2026-02-16'),
+          paymentStatus: 'paid',
+        },
+        {
+          policyId: policy3.id,
+          amount: 35000,
+          paymentDate: new Date('2025-06-02'),
+          paymentStatus: 'paid',
+        },
+      ],
+    });
+    console.log('✅ Created Premium Payments');
+  }
 
   // 6. Create Sample Claims
-  await prisma.claim.createMany({
-    data: [
-      {
-        policyId: policy1.id,
-        claimAmount: 45000,
-        reason: 'Emergency hospitalization and surgical procedures at Apollo Hospital',
-        submissionDate: new Date('2026-05-10'),
-        status: 'approved',
-      },
-      {
-        policyId: policy2.id,
-        claimAmount: 15000,
-        reason: 'Bumper repair and denting due to parking collision',
-        submissionDate: new Date('2026-06-01'),
-        status: 'pending',
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  console.log('✅ Created Sample Claims');
+  const existingClaims = await prisma.claim.count();
+  if (existingClaims === 0) {
+    await prisma.claim.createMany({
+      data: [
+        {
+          policyId: policy1.id,
+          claimAmount: 45000,
+          reason: 'Emergency hospitalization and surgical procedures at Apollo Hospital',
+          submissionDate: new Date('2026-05-10'),
+          status: 'approved',
+        },
+        {
+          policyId: policy2.id,
+          claimAmount: 15000,
+          reason: 'Bumper repair and denting due to parking collision',
+          submissionDate: new Date('2026-06-01'),
+          status: 'pending',
+        },
+      ],
+    });
+    console.log('✅ Created Sample Claims');
+  }
 
   console.log('\n🎉 Database Seed Completed Successfully!');
 }

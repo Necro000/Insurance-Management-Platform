@@ -10,7 +10,8 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:deploy": "prisma migrate deploy",
-    "db:seed": "node prisma/seed.js"
+    "db:seed": "node prisma/seed.js",
+    "setup:sqlite": "node setup-sqlite.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
